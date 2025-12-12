@@ -1,2 +1,3 @@
-# gba-experiments
+# GBA Experiments
+
 Testing GBA development
