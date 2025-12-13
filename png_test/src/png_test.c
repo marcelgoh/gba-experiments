@@ -1,15 +1,14 @@
 #include "tonc.h"
 #include "ahoy.h"
-#include "string.h"
 
 int main()
 {
     // Load palette
-    memcpy(pal_bg_mem, ahoyPal, ahoyPalLen);
+    memcpy32(pal_bg_mem, ahoyPal, ahoyPalLen/4);
     // Load tiles into CBB 0
-    memcpy(&tile_mem[0][0], ahoyTiles, ahoyTilesLen);
+    memcpy32(&tile_mem[0][0], ahoyTiles, ahoyTilesLen/4);
     // Load map into SBB 30
-    memcpy(&se_mem[30][0], ahoyMap, ahoyMapLen);
+    memcpy32(&se_mem[30][0], ahoyMap, ahoyMapLen/4);
 
     // set up BG0 for a 4bpp 64x32t map, using
     //   using charblock 0 and screenblock 31
