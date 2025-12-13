@@ -1,0 +1,1 @@
+ahoy.o: ahoy.s
