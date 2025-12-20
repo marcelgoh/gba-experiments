@@ -1,0 +1,1 @@
+happyface.o: happyface.s

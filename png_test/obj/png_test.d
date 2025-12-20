@@ -14,7 +14,8 @@ png_test.o: /home/marcel/GitHub/gba-experiments/png_test/src/png_test.c \
  /opt/devkitpro/libtonc/include/tonc_video.h \
  /opt/devkitpro/libtonc/include/tonc_nocash.h \
  /opt/devkitpro/libtonc/include/tonc_text.h \
- /home/marcel/GitHub/gba-experiments/png_test/obj/ahoy.h
+ /home/marcel/GitHub/gba-experiments/png_test/obj/grass.h \
+ /home/marcel/GitHub/gba-experiments/png_test/obj/happyface.h
 /opt/devkitpro/libtonc/include/tonc.h:
 /opt/devkitpro/libtonc/include/tonc_types.h:
 /opt/devkitpro/libtonc/include/tonc_memmap.h:
@@ -30,4 +31,5 @@ png_test.o: /home/marcel/GitHub/gba-experiments/png_test/src/png_test.c \
 /opt/devkitpro/libtonc/include/tonc_video.h:
 /opt/devkitpro/libtonc/include/tonc_nocash.h:
 /opt/devkitpro/libtonc/include/tonc_text.h:
-/home/marcel/GitHub/gba-experiments/png_test/obj/ahoy.h:
+/home/marcel/GitHub/gba-experiments/png_test/obj/grass.h:
+/home/marcel/GitHub/gba-experiments/png_test/obj/happyface.h:
