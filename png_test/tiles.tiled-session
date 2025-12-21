@@ -3,10 +3,24 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "tiles/all_grass.tmx",
+    "activeFile": "/home/marcel/GitHub/gba-experiments/sprite_walk/tilemaps/map.tmx",
     "expandedProjectPaths": [
     ],
     "fileStates": {
+        "/home/marcel/GitHub/gba-experiments/sprite_walk/tilemaps/map.tmx": {
+            "scale": 4.338333333333333,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 120.09220130618519,
+                "y": 79.98463311563582
+            }
+        },
+        "/home/marcel/GitHub/gba-experiments/sprite_walk/tilemaps/map.tmx#grass": {
+            "scaleInDock": 1
+        },
+        "/home/marcel/GitHub/gba-experiments/sprite_walk/tilemaps/map.tmx#road": {
+            "scaleInDock": 1
+        },
         "tiles/all_grass.tmx": {
             "scale": 3.2537499999999997,
             "selectedLayer": 0,
@@ -19,16 +33,18 @@
             "scaleInDock": 1
         }
     },
-    "last.imagePath": "/home/marcel/GitHub/gba-experiments/png_test/sprites",
+    "last.imagePath": "/home/marcel/GitHub/gba-experiments/sprite_walk/sprites",
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 8,
     "map.tileWidth": 8,
     "openFiles": [
-        "tiles/all_grass.tmx"
+        "tiles/all_grass.tmx",
+        "/home/marcel/GitHub/gba-experiments/sprite_walk/tilemaps/map.tmx"
     ],
     "project": "tiles.tiled-project",
     "recentFiles": [
-        "tiles/all_grass.tmx"
+        "tiles/all_grass.tmx",
+        "/home/marcel/GitHub/gba-experiments/sprite_walk/tilemaps/map.tmx"
     ],
     "tileset.embedInMap": true,
     "tileset.tileSize": {
