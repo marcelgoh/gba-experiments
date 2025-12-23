@@ -2,6 +2,12 @@
 #include "map.h"
 #include "walker.h"
 
+#define TILE_WIDTH 8
+#define TILE_HEIGHT 8
+#define INIT_TILE_X 12
+#define INIT_TILE_Y 4
+#define TURN_DELAY 3 /* measured in number of frames */
+
 OBJ_ATTR obj_buffer[128];
 u32 tile_id = 0;
 u32 palette_bank = 0;
@@ -36,22 +42,88 @@ void sprite_init() {
 
 }
 
+enum direction {LEFT, RIGHT, UP, DOWN, NEUTRAL};
+enum direction heading = NEUTRAL;  /* direction walker is going */
+enum direction key_heading = NEUTRAL;  /* direction player is holding */
+
+int turn_timer = 0;
+
+void update_key_heading() {
+    if (key_hit(KEY_LEFT)) key_heading = LEFT;
+    if (key_hit(KEY_RIGHT)) key_heading = RIGHT;
+    if (key_hit(KEY_UP)) key_heading = UP;
+    if (key_hit(KEY_DOWN)) key_heading = DOWN;
+
+    if (key_is_up(KEY_LEFT) && key_is_up(KEY_RIGHT)
+            && key_is_up(KEY_UP) && key_is_up(KEY_DOWN)) {
+        key_heading = NEUTRAL;
+    }
+
+
+    return;
+}
+
+int tile_x = INIT_TILE_X;
+int tile_y = INIT_TILE_Y;
+int x = INIT_TILE_X * TILE_WIDTH;
+int y = INIT_TILE_Y * TILE_HEIGHT;
+bool can_move = true;
+
+void update_position() {
+    int dest_x = tile_x * TILE_WIDTH;
+    int dest_y = tile_y * TILE_HEIGHT;
+    if (x == dest_x && y == dest_y) {
+        can_move = true;
+        return;
+    }
+    if (x != dest_x) {
+        /* if haven't reached dest_x, move horizontally */
+        x += (dest_x > x) ? 1 : -1;
+    } else {
+        /* if haven't reached dest_y, move vertically */
+        y += (dest_y > y) ? 1 : -1;
+    }
+
+    return;
+}
+
 int main() {
     bg_init();
     sprite_init();
     REG_DISPCNT= DCNT_MODE0 | DCNT_BG0 | DCNT_OBJ | DCNT_OBJ_1D;
-    int x = 96;
-    int y = 32;
     while(1) {
         vid_vsync();
         key_poll();
-
-        // -1 is a full mask
-        x += 8*bit_tribool(key_hit(-1), KI_RIGHT, KI_LEFT);
-        y += 8*bit_tribool(key_hit(-1), KI_DOWN, KI_UP);
-        //x += 8*key_tri_horz();
-        //y += 8*key_tri_vert();
-
+        update_key_heading();
+        if (can_move) {
+            /* read a new direction to move */
+            heading = key_heading;
+            if (key_heading != NEUTRAL && key_heading != heading) {
+                turn_timer = TURN_DELAY;
+            }
+            switch (heading) {
+                case UP:
+                    tile_y -= 1;
+                    break;
+                case DOWN:
+                    tile_y += 1;
+                    break;
+                case LEFT:
+                    tile_x -= 1;
+                    break;
+                case RIGHT:
+                    tile_x += 1;
+                    break;
+                case NEUTRAL:
+                    break;
+            }
+            can_move = false;
+        }
+        if (turn_timer == 0) {
+            update_position();
+        } else {
+            --turn_timer;
+        }
         walker->attr2=ATTR2_BUILD(tile_id, palette_bank, 0);
         obj_set_pos(walker, x, y);
 
