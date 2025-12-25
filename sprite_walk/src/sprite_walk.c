@@ -1,6 +1,7 @@
 #include "tonc.h"
 #include "map.h"
 #include "walker.h"
+#include "walker_left.h"
 
 #define TILE_WIDTH 8
 #define TILE_HEIGHT 8
@@ -32,12 +33,16 @@ void sprite_init() {
     memcpy32(&tile_mem[4][0], walkerTiles, walkerTilesLen>>2);
     memcpy32(pal_obj_mem, walkerPal, walkerPalLen>>2);
 
+    // walker_left is shifted one over
+    memcpy32(&tile_mem[4][16], walker_leftTiles, walker_leftTilesLen>>2);
+    memcpy32(pal_obj_mem, walker_leftPal, walker_leftPalLen>>2);
+
     // (2) Initialize all sprites
     oam_init(obj_buffer, 128);
 
     obj_set_attr(walker,
             ATTR0_SQUARE,				// Square, regular sprite
-            ATTR1_SIZE_32,					// 8x8p,
+            ATTR1_SIZE_16,					// 8x8p,
             ATTR2_PALBANK(palette_bank) | tile_id);		// palbank 0, tile 0
 
 }
@@ -96,8 +101,10 @@ int main() {
     bg_init();
     sprite_init();
     REG_DISPCNT= DCNT_MODE0 | DCNT_BG0 | DCNT_OBJ | DCNT_OBJ_1D;
+    irq_init(NULL);
+    irq_add(II_VBLANK, NULL);
     while(1) {
-        vid_vsync();
+        VBlankIntrWait();
         key_poll();
         update_key_heading();
         if (can_move && key_heading != NEUTRAL) {
@@ -105,17 +112,19 @@ int main() {
             if (key_heading != heading) turn_timer = TURN_DELAY;
             heading = key_heading;
             switch (heading) {
+                case LEFT:
+                    tile_id = 16;  /* switch to walker_left sprite */
+                    --tile_x;
+                    break;
+                case RIGHT:
+                    tile_id = 0;
+                    ++tile_x;
+                    break;
                 case UP:
                     --tile_y;
                     break;
                 case DOWN:
                     ++tile_y;
-                    break;
-                case LEFT:
-                    --tile_x;
-                    break;
-                case RIGHT:
-                    ++tile_x;
                     break;
                 case NEUTRAL:
                    /* shouldn't happen */
