@@ -3,3 +3,7 @@ build/
 *.sav
 *.gba
 *.elf
+*.map
+*.o
+*.d
+*.s

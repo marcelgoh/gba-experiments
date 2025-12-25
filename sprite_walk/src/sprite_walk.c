@@ -49,17 +49,21 @@ enum direction key_heading = NEUTRAL;  /* direction player is holding */
 int turn_timer = 0;
 
 void update_key_heading() {
-    if (key_hit(KEY_LEFT)) key_heading = LEFT;
-    if (key_hit(KEY_RIGHT)) key_heading = RIGHT;
-    if (key_hit(KEY_UP)) key_heading = UP;
-    if (key_hit(KEY_DOWN)) key_heading = DOWN;
+    /* no need to update key_heading if input state doesn't change */
+    if (key_curr_state() != key_prev_state()) {
+        if ((key_released(KEY_LEFT) && key_heading == LEFT) ||
+            (key_released(KEY_RIGHT) && key_heading == RIGHT) ||
+            (key_released(KEY_UP) && key_heading == UP) ||
+            (key_released(KEY_DOWN) && key_heading == DOWN)) {
+            key_heading = NEUTRAL;
+        }
 
-    if (key_is_up(KEY_LEFT) && key_is_up(KEY_RIGHT)
-            && key_is_up(KEY_UP) && key_is_up(KEY_DOWN)) {
-        key_heading = NEUTRAL;
+        if (key_is_down(KEY_LEFT)) key_heading = LEFT;
+        if (key_is_down(KEY_RIGHT)) key_heading = RIGHT;
+        if (key_is_down(KEY_UP)) key_heading = UP;
+        if (key_is_down(KEY_DOWN)) key_heading = DOWN;
+
     }
-
-
     return;
 }
 
@@ -73,6 +77,7 @@ void update_position() {
     int dest_x = tile_x * TILE_WIDTH;
     int dest_y = tile_y * TILE_HEIGHT;
     if (x == dest_x && y == dest_y) {
+        /* reached destination, so can move again */
         can_move = true;
         return;
     }
@@ -95,29 +100,27 @@ int main() {
         vid_vsync();
         key_poll();
         update_key_heading();
-        if (can_move) {
-            /* read a new direction to move */
+        if (can_move && key_heading != NEUTRAL) {
+            can_move = false;
+            if (key_heading != heading) turn_timer = TURN_DELAY;
             heading = key_heading;
-            if (key_heading != NEUTRAL && key_heading != heading) {
-                turn_timer = TURN_DELAY;
-            }
             switch (heading) {
                 case UP:
-                    tile_y -= 1;
+                    --tile_y;
                     break;
                 case DOWN:
-                    tile_y += 1;
+                    ++tile_y;
                     break;
                 case LEFT:
-                    tile_x -= 1;
+                    --tile_x;
                     break;
                 case RIGHT:
-                    tile_x += 1;
+                    ++tile_x;
                     break;
                 case NEUTRAL:
+                   /* shouldn't happen */
                     break;
             }
-            can_move = false;
         }
         if (turn_timer == 0) {
             update_position();
